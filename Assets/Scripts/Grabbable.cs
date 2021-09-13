@@ -3,15 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class Grabbable : MonoBehaviour
 {
+    [Header("Phyics/Movement")]
     public float speed = 1f;
     public float linearDeceleration = 0f;
-    public float angularDeceleration = 0f;
+    [Header("Color/Hover Things")]
+    public Color hoveredColor = Color.green;
+    Color normalColor;
+    float hoveredTime = 0;
+    public float hoverFadeTime = 0.5f;
+
     Rigidbody2D rb;
+    SpriteRenderer spriteRenderer;
 
     void Awake() {
+        spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        normalColor = spriteRenderer.color;
+    }
+
+    void Update() {
+        hoveredTime = Mathf.Max(0, hoveredTime - Time.deltaTime / hoverFadeTime);
+        spriteRenderer.color = Color.Lerp(normalColor, hoveredColor, hoveredTime);
+    }
+
+    public void Hovered() {
+        hoveredTime = Mathf.Min(1, hoveredTime + Time.deltaTime * 2 / hoverFadeTime);
     }
 
     void FixedUpdate() {

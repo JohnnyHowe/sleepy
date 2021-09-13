@@ -24,10 +24,16 @@ public class Hand : MonoBehaviour
     {
         transform.position = GetMouseWorldPosition();
 
+        Grabbable hoveredItem = GetGrabbable();
+
+        if (hoveredItem && grabbedItem == null) {
+            hoveredItem.Hovered();
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
             onGrab.Invoke();
-            grabbedItem = GetGrabbable();
+            grabbedItem = hoveredItem;
         }
         if (Input.GetMouseButtonUp(0))
         {
